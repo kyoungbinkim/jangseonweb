@@ -96,6 +96,17 @@
 .resultTitle { font-weight: 700; margin-bottom: 10px }
 .resultText { margin-bottom: 6px }
 
+/* Improved result card styles */
+.resultBox.improved { padding: 18px }
+.resultGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 12px }
+.resultCard { background: #f7faf7; border-radius: 10px; padding: 12px; text-align: left }
+.resultCard.highlight { background: linear-gradient(90deg, #e8f5e9, #a5d6a7) }
+.cardLabel { font-size: 13px; color: #666; margin-bottom: 6px }
+.cardValue { font-size: 16px; font-weight: 700 }
+.cardValue.large { font-size: 18px; color: #1b5e20 }
+.resultActions { display: flex; gap: 8px; margin-top: 14px }
+.resultActions .smallButton { padding: 8px 10px }
+
 .historyHeader { font-size: 22px; font-weight: 700; margin: 20px 0 }
 .historyItem { background: #fff; padding: 12px; border-radius: 12px; margin-bottom: 12px }
 .historyTitle { font-weight: 700; margin-bottom: 6px }

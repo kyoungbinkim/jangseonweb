@@ -463,11 +463,6 @@ export default function CMScreen() {
     const [loading, setLoading] = useState(false);
 
 
-    /**
-     * 새로고침 상태
-     */
-    const [refreshing, setRefreshing] = useState(false);
-
 
     /**
      * 엔진 메모이징
@@ -516,17 +511,7 @@ export default function CMScreen() {
     }, [loadHistory]);
 
 
-    /**
-     * 새로고침
-     */
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        try {
-            loadHistory();
-        } finally {
-            setRefreshing(false);
-        }
-    }, [loadHistory]);
+    // 새로고침은 웹에서 수동으로 로드 버튼으로 대체할 수 있으므로 상태 제거
 
 
     /**
@@ -583,8 +568,27 @@ export default function CMScreen() {
 
 
     /**
-     * 결과 저장 및 공유
+     * 리포트 텍스트 생성기 (파일 저장 및 복사에 재사용)
      */
+    const buildReportText = useCallback((reportData) => {
+        if (!reportData) return '';
+
+        return (
+            UTF8_BOM +
+            `[CM 대가산출 결과]\n\n` +
+            `사업명 : ${reportData.projectName}\n` +
+            `공사비 : ${formatNumber(reportData.projectCost)} 억원\n` +
+            `평균공기 : ${reportData.averageDuration} 개월\n` +
+            `노무비 : ${formatNumber(reportData.laborCost)} 원\n` +
+            `직접경비 : ${formatNumber(reportData.directExpense)} 원\n` +
+            `공급가액 : ${formatNumber(reportData.supplyAmount)} 원\n` +
+            `부가가치세 : ${formatNumber(reportData.vat)} 원\n` +
+            `총 합계 : ${formatNumber(reportData.totalAmount)} 원\n` +
+            `생성일시 : ${reportData.createdAt}\n`
+        );
+    }, []);
+
+
     const handleExport = useCallback((reportData = result) => {
         try {
             if (!reportData) {
@@ -593,17 +597,7 @@ export default function CMScreen() {
             }
 
             const safeName = sanitizeFileName(reportData.projectName || 'report');
-
-            const reportText = `\uFEFF[CM 대가산출 결과]\n\n` +
-                `사업명 : ${reportData.projectName}\n` +
-                `공사비 : ${formatNumber(reportData.projectCost)} 억원\n` +
-                `평균공기 : ${reportData.averageDuration} 개월\n` +
-                `노무비 : ${formatNumber(reportData.laborCost)} 원\n` +
-                `직접경비 : ${formatNumber(reportData.directExpense)} 원\n` +
-                `공급가액 : ${formatNumber(reportData.supplyAmount)} 원\n` +
-                `부가가치세 : ${formatNumber(reportData.vat)} 원\n` +
-                `총 합계 : ${formatNumber(reportData.totalAmount)} 원\n` +
-                `생성일시 : ${reportData.createdAt}\n`;
+            const reportText = buildReportText(reportData);
 
             const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -618,7 +612,27 @@ export default function CMScreen() {
         } catch (error) {
             alert(`파일 오류: ${error.message}`);
         }
-    }, [result]);
+    }, [result, buildReportText]);
+
+
+    // 복사 상태 표시
+    const [copyStatus, setCopyStatus] = useState('');
+
+    const handleCopy = useCallback(async (reportData = result) => {
+        if (!reportData) {
+            alert('복사할 데이터가 없습니다.');
+            return;
+        }
+
+        try {
+            const text = buildReportText(reportData);
+            await navigator.clipboard.writeText(text);
+            setCopyStatus('복사됨');
+            setTimeout(() => setCopyStatus(''), 2000);
+        } catch (err) {
+            alert(`복사 실패: ${err.message}`);
+        }
+    }, [result, buildReportText]);
 
 
     /**
@@ -669,14 +683,36 @@ export default function CMScreen() {
                     </button>
 
                     {result && (
-                        <div className="resultBox">
+                        <div className="resultBox improved">
                             <div className="resultTitle">산출 결과</div>
-                            <div className="resultText">사업명 : {result.projectName}</div>
-                            <div className="resultText">평균공기 : {result.averageDuration} 개월</div>
-                            <div className="resultText">총 합계 : {formatNumber(result.totalAmount)} 원</div>
-                            <button className="exportButton" onClick={() => handleExport()}>
-                                결과 저장 / 공유
-                            </button>
+
+                            <div className="resultGrid">
+                                <div className="resultCard">
+                                    <div className="cardLabel">사업명</div>
+                                    <div className="cardValue">{result.projectName}</div>
+                                </div>
+
+                                <div className="resultCard">
+                                    <div className="cardLabel">공사비</div>
+                                    <div className="cardValue">{formatNumber(result.projectCost)} 억원</div>
+                                </div>
+
+                                <div className="resultCard">
+                                    <div className="cardLabel">평균공기</div>
+                                    <div className="cardValue">{result.averageDuration} 개월</div>
+                                </div>
+
+                                <div className="resultCard highlight">
+                                    <div className="cardLabel">총 합계</div>
+                                    <div className="cardValue large">{formatNumber(result.totalAmount)} 원</div>
+                                </div>
+                            </div>
+
+                            <div className="resultActions">
+                                <button className="exportButton" onClick={() => handleExport()}>파일로 저장</button>
+                                <button className="smallButton" onClick={() => handleCopy()}>{copyStatus || '결과 복사'}</button>
+                                <button className="smallButton" onClick={() => saveHistory(result)}>이력 저장</button>
+                            </div>
                         </div>
                     )}
 
@@ -686,8 +722,20 @@ export default function CMScreen() {
 
                     <div className="historyHeader">저장 이력</div>
 
-                    <div>
-                        {history.map((item) => renderHistoryItem({ item }))}
+                    <div className="historyList">
+                        {history.length === 0 && <div className="historyEmpty">저장된 이력이 없습니다.</div>}
+                        {history.map((item) => (
+                            <div key={item.id} className="historyRow">
+                                <div>
+                                    <div className="historyTitle">{item.projectName}</div>
+                                    <div className="historyText">공사비: {formatNumber(item.projectCost)} 억원 · 총: {formatNumber(item.totalAmount)} 원</div>
+                                </div>
+                                <div style={{display: 'flex', gap: 8}}>
+                                    <button className="smallButton" onClick={() => setResult(item)}>불러오기</button>
+                                    <button className="smallButton" onClick={() => handleExport(item)}>저장</button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
