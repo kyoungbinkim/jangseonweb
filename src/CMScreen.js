@@ -289,6 +289,76 @@ class CMTotalReportBinder {
 
 
     /**
+     * 평균공기 산출 근거 설명(구간, 보간식 반환)
+     */
+    getAverageDurationExplanation(projectCost) {
+
+        this.validateProjectCost(projectCost);
+
+        const {
+            masterCost,
+            masterDuration
+        } = this.standard;
+
+        if (projectCost <= masterCost[0]) {
+            return {
+                type: 'min',
+                projectCost,
+                x1: masterCost[0],
+                y1: masterDuration[0],
+                result: masterDuration[0],
+                text: '최소값 이하로 기준 최소 평균공기를 적용합니다.'
+            };
+        }
+
+        if (
+            projectCost >=
+            masterCost[masterCost.length - 1]
+        ) {
+            return {
+                type: 'max',
+                projectCost,
+                x2: masterCost[masterCost.length - 1],
+                y2: masterDuration[masterDuration.length - 1],
+                result: masterDuration[masterDuration.length - 1],
+                text: '최대값 이상으로 기준 최대 평균공기를 적용합니다.'
+            };
+        }
+
+        for (let i = 0; i < masterCost.length - 1; i++) {
+            const x1 = masterCost[i];
+            const x2 = masterCost[i + 1];
+            const y1 = masterDuration[i];
+            const y2 = masterDuration[i + 1];
+
+            if (projectCost >= x1 && projectCost <= x2) {
+                const duration =
+                    y1 +
+                    (((projectCost - x1) * (y2 - y1)) / (x2 - x1));
+
+                return {
+                    type: 'interpolate',
+                    projectCost,
+                    x1,
+                    x2,
+                    y1,
+                    y2,
+                    duration: Number(duration.toFixed(2)),
+                    formula: 'y = y1 + ((x - x1) * (y2 - y1)) / (x2 - x1)',
+                    text: '구간 보간(직선보간)을 통해 평균공기를 계산합니다.'
+                };
+            }
+        }
+
+        return {
+            type: 'unknown',
+            projectCost,
+            result: null
+        };
+    }
+
+
+    /**
      * 노무비 계산
      */
     calculateLaborCost(
@@ -447,6 +517,7 @@ export default function CMScreen() {
      * 결과 상태
      */
     const [result, setResult] = useState(null);
+    const [explanation, setExplanation] = useState(null);
     const [history, setHistory] = useState([]);
 
 
@@ -554,7 +625,9 @@ export default function CMScreen() {
             }
 
             const report = engine.calculate(projectName.trim(), numericCost);
+            const explanation = engine.getAverageDurationExplanation(numericCost);
             setResult(report);
+            setExplanation(explanation);
 
             if (autoSaveEnabled) {
                 saveHistory(report);
@@ -713,6 +786,28 @@ export default function CMScreen() {
                                 <button className="smallButton" onClick={() => handleCopy()}>{copyStatus || '결과 복사'}</button>
                                 <button className="smallButton" onClick={() => saveHistory(result)}>이력 저장</button>
                             </div>
+
+                            {explanation && (
+                                <div className="explanationBox">
+                                    <div className="explanationTitle">산출 근거</div>
+                                    <div className="explanationContent">
+                                        <div><strong>방법:</strong> {explanation.text}</div>
+                                        {explanation.type === 'interpolate' && (
+                                            <div>
+                                                <div><strong>구간:</strong> {explanation.x1}억 ~ {explanation.x2}억</div>
+                                                <div><strong>공식:</strong> {explanation.formula}</div>
+                                                <div><strong>계산 예:</strong> y1={explanation.y1}, y2={explanation.y2}, x={explanation.projectCost} ⇒ 평균공기={explanation.duration} 개월</div>
+                                            </div>
+                                        )}
+                                        {explanation.type === 'min' && (
+                                            <div>최소 기준({explanation.x1}억) 평균공기 {explanation.y1} 개월을 적용했습니다.</div>
+                                        )}
+                                        {explanation.type === 'max' && (
+                                            <div>최대 기준({explanation.x2}억) 평균공기 {explanation.y2} 개월을 적용했습니다.</div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 

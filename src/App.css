@@ -107,6 +107,16 @@
 .resultActions { display: flex; gap: 8px; margin-top: 14px }
 .resultActions .smallButton { padding: 8px 10px }
 
+.explanationBox { margin-top: 14px; background: #fff8e1; padding: 12px; border-radius: 10px; border: 1px solid #ffe0b2 }
+.explanationTitle { font-weight: 700; margin-bottom: 8px }
+.explanationContent { font-size: 14px; color: #333 }
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .resultGrid { grid-template-columns: 1fr; }
+  .resultActions { flex-direction: column; }
+}
+
 .historyHeader { font-size: 22px; font-weight: 700; margin: 20px 0 }
 .historyItem { background: #fff; padding: 12px; border-radius: 12px; margin-bottom: 12px }
 .historyTitle { font-weight: 700; margin-bottom: 6px }
