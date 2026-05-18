@@ -1,6 +1,6 @@
 # Jangseon CM 대가산출 웹
 
-간단한 CM(건설사업관리) 대가 산출 도구의 웹 포팅입니다. React(Create React App)로 작성되었고 GitHub Pages를 통해 다음 URL에 배포되어 있습니다:
+간단한 CM(건설사업관리) 대가 산출 도구의 웹 포팅입니다. React로 작성되었고 GitHub Pages를 통해 다음 URL에 배포되어 있습니다:
 
 - 데모 사이트: https://kyoungbinkim.github.io/jangseonweb
  - 데모 사이트: https://kyoungbinkim.github.io/jangseonweb
