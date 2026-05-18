@@ -1,70 +1,54 @@
-# Getting Started with Create React App
+# Jangseon CM 대가산출 웹
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+간단한 CM(건설사업관리) 대가 산출 도구의 웹 포팅입니다. React(Create React App)로 작성되었고 GitHub Pages를 통해 다음 URL에 배포되어 있습니다:
 
-## Available Scripts
+- 데모 사이트: https://kyoungbinkim.github.io/jangseonweb
+ - 데모 사이트: https://kyoungbinkim.github.io/jangseonweb
 
-In the project directory, you can run:
+연락처
+- 수정 필요 사항이 있거나 개선 제안이 있으면 kyoungbin1996@gmail.com 으로 연락주세요.
 
-### `npm start`
+주요 기능
+- 사업명과 공사비(억원)를 입력하면 2026년 CM 기준에 따라 평균공기, 노무비, 직접경비, 공급가액, 부가세 및 총 합계를 계산합니다.
+- 계산 결과를 파일로 내보내기(.txt 다운로드)하거나 클립보드에 복사할 수 있습니다.
+- 결과 자동 저장(로컬 저장소)을 지원하며, 저장된 이력을 불러오고 개별 항목을 파일로 저장할 수 있습니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+빠른 시작
+1. 레포지토리 클론
+```
+git clone git@github.com:kyoungbinkim/jangseonweb.git
+cd jangseonweb
+```
+2. 의존성 설치
+```
+npm install
+```
+3. 개발 서버 실행
+```
+npm start
+```
+브라우저에서 http://localhost:3000 을 열어 앱을 확인하세요.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+배포
+- 이 레포지토리는 gh-pages를 사용하여 GitHub Pages로 배포됩니다. 배포 명령:
+```
+npm run deploy
+```
+배포 전 package.json의 "homepage" 필드를 배포 URL로 설정해야 합니다(현재는 https://kyoungbinkim.github.io/jangseonweb 로 설정됨).
 
-### `npm test`
+파일 및 구조
+- src/CMScreen.js: 메인 화면(입력, 계산, 결과, 이력 관리)
+- src/App.js: CMScreen을 렌더링
+- src/App.css: 간단한 스타일
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+개선 포인트(향후 작업)
+- 반응형 디자인 강화(모바일 최적화)
+- 결과 PDF/Excel 내보내기 추가
+- 입력 유효성 강화 및 국제화(i18n)
+- GitHub Actions를 통한 CI/CD 자동화
 
-### `npm run build`
+문제 발생 시
+- 배포가 정상적으로 반영되지 않으면 GitHub Pages 설정 또는 gh-pages 브랜치(gh-pages)의 내용을 확인하세요.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+라이선스
+- MIT (원하시면 지정)
