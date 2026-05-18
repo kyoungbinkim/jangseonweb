@@ -36,3 +36,70 @@
     transform: rotate(360deg);
   }
 }
+
+/* CMScreen styles (simple port from React Native styles) */
+.safeArea {
+  min-height: 100vh;
+  background-color: #F4F6F8;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.scrollContainer {
+  padding: 20px;
+  background: transparent;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #222222;
+}
+
+.input {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.button, .exportButton, .clearButton, .smallButton {
+  cursor: pointer;
+  border: none;
+}
+
+.button {
+  background-color: #1565C0;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.buttonDisabled { opacity: 0.7 }
+
+.exportButton { background: #2E7D32; color: #fff; padding: 10px 14px; border-radius: 10px; margin-top: 10px }
+.clearButton { background: #C62828; color: #fff; padding: 10px 14px; border-radius: 10px; margin: 10px 0 }
+.smallButton { background: #2E7D32; color: #fff; padding: 8px 10px; border-radius: 8px; margin-top: 10px }
+
+.resultBox { background: #fff; padding: 16px; border-radius: 12px; margin-bottom: 20px }
+.resultTitle { font-weight: 700; margin-bottom: 10px }
+.resultText { margin-bottom: 6px }
+
+.historyHeader { font-size: 22px; font-weight: 700; margin: 20px 0 }
+.historyItem { background: #fff; padding: 12px; border-radius: 12px; margin-bottom: 12px }
+.historyTitle { font-weight: 700; margin-bottom: 6px }
+.historyText { color: #444 }
+
+.switchRow { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px }
+.label { font-size: 16px; color: #444 }
