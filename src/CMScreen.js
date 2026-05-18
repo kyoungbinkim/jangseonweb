@@ -832,6 +832,9 @@ export default function CMScreen() {
                             </div>
                         ))}
                     </div>
+                    <div style={{marginTop: 24, fontSize: 13, color: '#666'}}>
+                        수정 필요 사항이 있으면 <a href="mailto:kyoungbin1996@gmail.com">kyoungbin1996@gmail.com</a> 으로 연락해주세요.
+                    </div>
                 </div>
             </div>
         </div>
