@@ -197,6 +197,32 @@ class CMTotalReportBinder {
 
 
     /**
+     * 기간 검증
+     */
+    validateProjectDuration(
+        projectDuration
+    ) {
+
+        if (
+            typeof projectDuration !== 'number' ||
+            isNaN(projectDuration)
+        ) {
+
+            throw new Error(
+                '기간은 숫자여야 합니다.'
+            );
+        }
+
+        if (projectDuration <= 0) {
+
+            throw new Error(
+                '기간은 0보다 커야 합니다.'
+            );
+        }
+    }
+
+
+    /**
      * 직선보간 평균공기 계산
      */
     getAverageDuration(
@@ -419,13 +445,20 @@ class CMTotalReportBinder {
      */
     calculate(
         projectName,
-        projectCost
+        projectCost,
+        projectDuration
     ) {
 
+        this.validateProjectCost(
+            projectCost
+        );
+
+        this.validateProjectDuration(
+            projectDuration
+        );
+
         const averageDuration =
-            this.getAverageDuration(
-                projectCost
-            );
+            projectDuration;
 
         const laborCost =
             this.calculateLaborCost(
@@ -511,6 +544,7 @@ export default function CMScreen() {
      */
     const [projectName, setProjectName] = useState('');
     const [projectCost, setProjectCost] = useState('');
+    const [projectDuration, setProjectDuration] = useState('');
 
 
     /**
@@ -618,14 +652,24 @@ export default function CMScreen() {
             }
 
             const numericCost = parseCostValue(projectCost);
+            const numericDuration = parseCostValue(projectDuration);
 
             if (isNaN(numericCost)) {
                 alert('공사비 형식이 올바르지 않습니다.');
                 return;
             }
 
-            const report = engine.calculate(projectName.trim(), numericCost);
-            const explanation = engine.getAverageDurationExplanation(numericCost);
+            if (isNaN(numericDuration)) {
+                alert('기간 형식이 올바르지 않습니다.');
+                return;
+            }
+
+            const report = engine.calculate(projectName.trim(), numericCost, numericDuration);
+            const explanation = {
+                type: 'manual',
+                text: '입력한 기간(개월)을 기준으로 산출합니다.',
+                duration: numericDuration
+            };
             setResult(report);
             setExplanation(explanation);
 
@@ -637,7 +681,7 @@ export default function CMScreen() {
         } finally {
             setLoading(false);
         }
-    }, [loading, engine, projectName, projectCost, autoSaveEnabled, saveHistory]);
+    }, [loading, engine, projectName, projectCost, projectDuration, autoSaveEnabled, saveHistory]);
 
 
     /**
@@ -651,7 +695,7 @@ export default function CMScreen() {
             `[CM 대가산출 결과]\n\n` +
             `사업명 : ${reportData.projectName}\n` +
             `공사비 : ${formatNumber(reportData.projectCost)} 억원\n` +
-            `평균공기 : ${reportData.averageDuration} 개월\n` +
+            `기간 : ${reportData.averageDuration} 개월\n` +
             `노무비 : ${formatNumber(reportData.laborCost)} 원\n` +
             `직접경비 : ${formatNumber(reportData.directExpense)} 원\n` +
             `공급가액 : ${formatNumber(reportData.supplyAmount)} 원\n` +
@@ -751,6 +795,8 @@ export default function CMScreen() {
 
                     <input className="input" placeholder="공사비 (억원)" value={projectCost} onChange={(e) => setProjectCost(sanitizeNumericInput(e.target.value))} />
 
+                    <input className="input" placeholder="기간 (개월)" value={projectDuration} onChange={(e) => setProjectDuration(sanitizeNumericInput(e.target.value))} />
+
                     <button className={`button ${loading ? 'buttonDisabled' : ''}`} onClick={handleCalculate} disabled={loading}>
                         {loading ? '처리중...' : '대가 산출 실행'}
                     </button>
@@ -771,7 +817,7 @@ export default function CMScreen() {
                                 </div>
 
                                 <div className="resultCard">
-                                    <div className="cardLabel">평균공기</div>
+                                    <div className="cardLabel">기간</div>
                                     <div className="cardValue">{result.averageDuration} 개월</div>
                                 </div>
 
@@ -792,6 +838,9 @@ export default function CMScreen() {
                                     <div className="explanationTitle">산출 근거</div>
                                     <div className="explanationContent">
                                         <div><strong>방법:</strong> {explanation.text}</div>
+                                        {explanation.type === 'manual' && (
+                                            <div>입력 기간: {explanation.duration} 개월</div>
+                                        )}
                                         {explanation.type === 'interpolate' && (
                                             <div>
                                                 <div><strong>구간:</strong> {explanation.x1}억 ~ {explanation.x2}억</div>
@@ -823,7 +872,7 @@ export default function CMScreen() {
                             <div key={item.id} className="historyRow">
                                 <div>
                                     <div className="historyTitle">{item.projectName}</div>
-                                    <div className="historyText">공사비: {formatNumber(item.projectCost)} 억원 · 총: {formatNumber(item.totalAmount)} 원</div>
+                                    <div className="historyText">공사비: {formatNumber(item.projectCost)} 억원 · 기간: {item.averageDuration} 개월 · 총: {formatNumber(item.totalAmount)} 원</div>
                                 </div>
                                 <div style={{display: 'flex', gap: 8}}>
                                     <button className="smallButton" onClick={() => setResult(item)}>불러오기</button>
