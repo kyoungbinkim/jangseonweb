@@ -765,21 +765,6 @@ export default function CMScreen() {
         }
     }, []);
 
-
-
-    /**
-     * 저장 이력 렌더링
-     */
-    const renderHistoryItem = ({ item }) => (
-        <div className="historyItem" key={item.id}>
-            <div className="historyTitle">{item.projectName}</div>
-            <div className="historyText">공사비 : {formatNumber(item.projectCost)} 억원</div>
-            <div className="historyText">총 합계 : {formatNumber(item.totalAmount)} 원</div>
-            <button className="smallButton" onClick={() => handleExport(item)}>결과 저장</button>
-        </div>
-    );
-
-
     return (
         <div className="safeArea">
             <div className="container">
