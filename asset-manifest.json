@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/jangseonweb/static/css/main.96bade0e.css",
-    "main.js": "/jangseonweb/static/js/main.6a0d29de.js",
+    "main.js": "/jangseonweb/static/js/main.ed6d7fa1.js",
     "static/js/453.7243bdad.chunk.js": "/jangseonweb/static/js/453.7243bdad.chunk.js",
     "index.html": "/jangseonweb/index.html",
     "main.96bade0e.css.map": "/jangseonweb/static/css/main.96bade0e.css.map",
-    "main.6a0d29de.js.map": "/jangseonweb/static/js/main.6a0d29de.js.map",
+    "main.ed6d7fa1.js.map": "/jangseonweb/static/js/main.ed6d7fa1.js.map",
     "453.7243bdad.chunk.js.map": "/jangseonweb/static/js/453.7243bdad.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.96bade0e.css",
-    "static/js/main.6a0d29de.js"
+    "static/js/main.ed6d7fa1.js"
   ]
 }
